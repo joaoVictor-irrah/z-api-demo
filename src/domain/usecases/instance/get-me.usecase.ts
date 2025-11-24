@@ -2,13 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { ZApiHttpService } from '../../../data/services/z-api-http.service';
 
 export interface GetMeUseCaseOutput {
-  phone?: string;
-  platform?: string;
-  deviceManufacturer?: string;
-  deviceModel?: string;
-  osVersion?: string;
-  waVersion?: string;
+  id?: string;
+  name?: string;
+  token?: string;
+  connected: boolean;
   status: string;
+  created?: string;
+  due?: number;
+  paymentStatus?: string;
+  autoReadMessage?: boolean;
+  callRejectAuto?: boolean;
+  callRejectMessage?: string;
+  receiveCallbackSentByMe?: boolean;
+  receivedAndDeliveryCallbackUrl?: string;
+  presenceChatCallbackUrl?: string;
+  disconnectedCallbackUrl?: string;
+  deliveryCallbackUrl?: string;
+  connectedCallbackUrl?: string;
+  messageStatusCallbackUrl?: string;
+  receivedCallbackUrl?: string;
   error?: string;
 }
 
@@ -22,19 +34,32 @@ export class GetMeUseCase implements IGetMeUseCase {
 
   async execute(): Promise<GetMeUseCaseOutput> {
     try {
-      const response = await this.zApiHttpService.get<any>('/status');
+      const response = await this.zApiHttpService.get<any>('/me');
 
       return {
-        phone: response.phone,
-        platform: response.platform,
-        deviceManufacturer: response.deviceManufacturer,
-        deviceModel: response.deviceModel,
-        osVersion: response.osVersion,
-        waVersion: response.waVersion,
+        id: response.id,
+        name: response.name,
+        token: response.token,
+        connected: response.connected,
         status: response.connected ? 'connected' : 'disconnected',
+        created: response.created,
+        due: response.due,
+        paymentStatus: response.paymentStatus,
+        autoReadMessage: response.autoReadMessage,
+        callRejectAuto: response.callRejectAuto,
+        callRejectMessage: response.callRejectMessage,
+        receiveCallbackSentByMe: response.receiveCallbackSentByMe,
+        receivedAndDeliveryCallbackUrl: response.receivedAndDeliveryCallbackUrl,
+        presenceChatCallbackUrl: response.presenceChatCallbackUrl,
+        disconnectedCallbackUrl: response.disconnectedCallbackUrl,
+        deliveryCallbackUrl: response.deliveryCallbackUrl,
+        connectedCallbackUrl: response.connectedCallbackUrl,
+        messageStatusCallbackUrl: response.messageStatusCallbackUrl,
+        receivedCallbackUrl: response.receivedCallbackUrl,
       };
     } catch (error) {
       return {
+        connected: false,
         status: 'error',
         error: error.message || 'Failed to get instance status',
       };

@@ -1,7 +1,8 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import { Chat } from '../../entities/chat.entity';
 import { IChatRepository } from '../../repositories/chat.repository.interface';
 import { ZApiHttpService } from '../../../data/services/z-api-http.service';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IGetChatsUseCase {
   execute(): Promise<Chat[]>;
@@ -17,21 +18,36 @@ export class GetChatsUseCase implements IGetChatsUseCase {
 
   async execute(): Promise<Chat[]> {
     try {
-      const response = await this.zApiHttpService.get<any>('/chats');
+      const response = await this.zApiHttpService.get<any[]>('/chats');
 
       if (response && Array.isArray(response)) {
         for (const chat of response) {
-          const existingChat = await this.chatRepository.findById(chat.id);
+          const lid = chat.lid;
+          const phone = chat.phone;
 
-          if (!existingChat) {
-            const newChat = new Chat(
-              chat.id,
-              chat.name || chat.phone,
-              chat.phone,
-              chat.lid || chat.id,
-            );
-            await this.chatRepository.create(newChat);
+          if (!lid && !phone) {
+            continue;
           }
+
+          const existingByLid = lid
+            ? await this.chatRepository.findByLid(lid)
+            : null;
+          const existingByPhone = phone
+            ? await this.chatRepository.findByPhone(phone)
+            : null;
+
+          if (existingByLid || existingByPhone) {
+            continue;
+          }
+
+          const newChat = new Chat(
+            uuidv4(),
+            chat.name || phone || lid,
+            phone || '',
+            lid || '',
+          );
+
+          await this.chatRepository.create(newChat);
         }
       }
 

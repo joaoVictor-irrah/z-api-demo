@@ -10,7 +10,6 @@ export class ChatsController {
 
   @Get('get-chats')
   async getChats() {
-    // TODO: Implementar endpoint
     return await this.getChatsUseCase.execute();
   }
 }

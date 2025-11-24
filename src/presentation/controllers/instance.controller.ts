@@ -16,19 +16,16 @@ export class InstanceController {
 
   @Get('me')
   async getMe() {
-    // TODO: Implementar endpoint
     return await this.getMeUseCase.execute();
   }
 
   @Get('disconnect')
   async disconnect() {
-    // TODO: Implementar endpoint
     return await this.disconnectUseCase.execute();
   }
 
   @Get('qr-code')
   async getQrCode() {
-    // TODO: Implementar endpoint
     return await this.getQrCodeUseCase.execute();
   }
 }

@@ -16,19 +16,16 @@ export class MessagesController {
 
   @Post('send-text')
   async sendText(@Body() body: any) {
-    // TODO: Implementar endpoint
     return await this.sendTextUseCase.execute(body);
   }
 
   @Post('send-image')
   async sendImage(@Body() body: any) {
-    // TODO: Implementar endpoint
     return await this.sendImageUseCase.execute(body);
   }
 
   @Post('send-video')
   async sendVideo(@Body() body: any) {
-    // TODO: Implementar endpoint
     return await this.sendVideoUseCase.execute(body);
   }
 }
